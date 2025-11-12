@@ -18,6 +18,12 @@ namespace ToDoList.Data
         /// Provides CRUD access to the TodoItem table in the database.
         /// </summary>
         public DbSet<TodoItem> TodoItems { get; set; } = default!;
+        /// <summary>
+        /// Gets or sets the collection of <see cref="User"/> entities.
+        /// Provides CRUD access to the User table in the database.
+        /// </summary>
+        public DbSet<User> Users { get; set; } = default!;
+
     }
 
 }
