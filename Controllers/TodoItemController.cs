@@ -10,7 +10,7 @@ namespace ToDoList.Controllers
     /// </summary>
     [ApiController]
     [Route("[controller]")]
-    public class TaskController(ITodoItemService _service) : ControllerBase
+    public class TodoItemController(ITodoItemService _service) : ControllerBase
 
     {
         /// <summary>
