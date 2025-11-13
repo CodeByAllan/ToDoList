@@ -39,6 +39,14 @@ namespace ToDoList.Models
         public bool IsCompleted { get; init; } = false;
 
         /// <summary>
+        /// Gets the identifier of the user who owns the todo item.
+        /// </summary>
+        /// <remarks>
+        /// This property is required and must be set during initialization.
+        /// </remarks>
+        public int UserId { get; init; }
+        
+        /// <summary>
         /// Gets the date and time when the todo item was created.
         /// </summary>
         public DateTime CreatedAt { get; init; }

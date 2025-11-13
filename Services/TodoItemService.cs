@@ -14,7 +14,7 @@ namespace ToDoList.Services
     /// - Persists changes by invoking repository save operations.
     /// All operations are asynchronous.
     /// </remarks>
-    public class TodoItemService(ITodoItemRepository _repository) : ITodoItemService
+    public class TodoItemService(ITodoItemRepository _todoItemRepository, IUserRepository _userRepository) : ITodoItemService
     {
         /// <summary>
         /// Retrieves all todo items.
@@ -25,7 +25,7 @@ namespace ToDoList.Services
 
         public async Task<IEnumerable<TodoItem>> GetTodoItemsAsync()
         {
-            return await _repository.GetTodoItemsAsync();
+            return await _todoItemRepository.GetTodoItemsAsync();
         }
         /// <summary>
         /// Retrieves a todo item by its identifier.
@@ -36,7 +36,7 @@ namespace ToDoList.Services
         /// </returns>
         public async Task<TodoItem?> GetTodoItemByIdAsync(int id)
         {
-            return await _repository.GetTodoItemByIdAsync(id);
+            return await _todoItemRepository.GetTodoItemByIdAsync(id);
         }
         /// <summary>
         /// Creates a new todo item from the provided DTO, sets its creation and update timestamps to UTC now,
@@ -45,23 +45,29 @@ namespace ToDoList.Services
         /// <param name="createTodoItemDto">DTO containing the data for the new todo item.</param>
         /// <returns>A task that resolves to the created <see cref="TodoItem"/>.</returns>
         /// <exception cref="ArgumentException">Thrown when <see cref="CreateTodoItemDto.Title"/> is null, empty, or whitespace.</exception>
+        /// <exception cref="KeyNotFoundException">Thrown when no user with the specified <see cref="CreateTodoItemDto.UserId"/> exists.</exception>
         public async Task<TodoItem> CreateTodoItemAsync(CreateTodoItemDto createTodoItemDto)
         {
             if (string.IsNullOrWhiteSpace(createTodoItemDto.Title))
             {
                 throw new ArgumentException("Title is required!");
             }
+            var user = await _userRepository.GetUserByIdAsync(createTodoItemDto.UserId);
+            if (user == null)
+            {
+                throw new KeyNotFoundException($"User with Id {createTodoItemDto.UserId} not found!");
+            }
             var dateTimeNow = DateTime.UtcNow;
             var todoItem = new TodoItem
             {
                 Title = createTodoItemDto.Title,
                 Description = createTodoItemDto.Description,
+                UserId = createTodoItemDto.UserId,
                 CreatedAt = dateTimeNow,
                 UpdatedAt = dateTimeNow
-
             };
-            await _repository.CreateTodoItemAsync(todoItem);
-            await _repository.SaveTodoItemAsync();
+            await _todoItemRepository.CreateTodoItemAsync(todoItem);
+            await _todoItemRepository.SaveTodoItemAsync();
             return todoItem;
         }
         /// <summary>
@@ -75,7 +81,7 @@ namespace ToDoList.Services
         /// <exception cref="KeyNotFoundException">Thrown when no todo item with the specified id exists.</exception>
         public async Task<TodoItem> UpdateTodoItemAsync(int id, UpdateTodoItemDto updateTodoItemDto)
         {
-            var todoItemIsExist = await _repository.GetTodoItemByIdAsync(id);
+            var todoItemIsExist = await _todoItemRepository.GetTodoItemByIdAsync(id);
             if (todoItemIsExist == null)
             {
                 throw new KeyNotFoundException($"TodoItem with Id {id} not found!");
@@ -88,8 +94,8 @@ namespace ToDoList.Services
                 UpdatedAt = DateTime.UtcNow
 
             };
-            await _repository.UpdateTodoItemAsync(todoItemIsExist, updatedTodoItem);
-            await _repository.SaveTodoItemAsync();
+            await _todoItemRepository.UpdateTodoItemAsync(todoItemIsExist, updatedTodoItem);
+            await _todoItemRepository.SaveTodoItemAsync();
             return updatedTodoItem;
         }
         /// <summary>
@@ -100,13 +106,13 @@ namespace ToDoList.Services
         /// <exception cref="KeyNotFoundException">Thrown when no todo item with the specified id exists.</exception>
         public async Task DeleteTodoItemAsync(int id)
         {
-            var todoItemExist = await _repository.GetTodoItemByIdAsync(id);
+            var todoItemExist = await _todoItemRepository.GetTodoItemByIdAsync(id);
             if (todoItemExist == null)
             {
                 throw new KeyNotFoundException($"TodoItem with Id {id} not found!");
             }
-            await _repository.DeleteTodoItemAsync(todoItemExist);
-            await _repository.SaveTodoItemAsync();
+            await _todoItemRepository.DeleteTodoItemAsync(todoItemExist);
+            await _todoItemRepository.SaveTodoItemAsync();
         }
     }
 }

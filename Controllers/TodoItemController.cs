@@ -20,6 +20,7 @@ namespace ToDoList.Controllers
         /// <returns>
         /// A <see cref="CreatedAtActionResult"/> with status code 201 and the created todo item if successful.
         /// A <see cref="BadRequestResult"/> with status code 400 if an argument validation error occurs.
+        /// A <see cref="NotFoundResult"/> with status code 404 if a related resource is not found.
         /// </returns>
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateTodoItemDto createTodoItemDto)
@@ -34,6 +35,10 @@ namespace ToDoList.Controllers
                     createTodoItem
                 );
 
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
             }
             catch (ArgumentException ex)
             {

@@ -23,6 +23,14 @@ namespace ToDoList.interfaces
         /// </returns>
         Task<User?> GetUserByUsernameAsync(string username);
         /// <summary>
+        /// Retrieves a specific user by its identifier asynchronously.
+        /// </summary>
+        /// <param name="id">The unique identifier of the user to retrieve.</param>
+        /// <returns>
+        /// A task that represents the asynchronous operation. The task result contains the User if found; otherwise, null.
+        /// </returns>
+        Task<User?> GetUserByIdAsync(int id);
+        /// <summary>
         /// Creates a new user asynchronously.
         /// </summary>
         /// <param name="user">The User object to be created.</param>

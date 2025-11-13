@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using Microsoft.EntityFrameworkCore;
 
 namespace ToDoList.Models
@@ -40,6 +41,13 @@ namespace ToDoList.Models
         /// This property is required and defaults to an empty string.
         /// </remarks>
         public string Username { get; init; } = string.Empty;
+        /// <summary>
+        /// Gets the collection of to-do items associated with the user.
+        /// </summary>
+        /// <remarks>
+        /// This property is initialized to an empty collection.
+        /// </remarks>
+        public Collection<TodoItem> TodoItems { get; init; } = [];
         /// <summary>
         /// Gets the date and time when the user was created.
         /// </summary>

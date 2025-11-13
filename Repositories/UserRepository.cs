@@ -50,35 +50,34 @@ namespace ToDoList.Repositories
             context.Users.Remove(user);
             return Task.CompletedTask;
         }
-       /// <summary>
+        /// <summary>
         /// Asynchronously retrieves a <see cref="User"/> entity by its username from the data store.
         /// </summary>
         /// <param name="username">The username of the user to retrieve.</param>
         /// <returns>
         /// A <see cref="Task{TResult}"/> representing the asynchronous operation,
-        /// containing the <see cref="User"/> entity if found; otherwise, <c>null
-        /// </c>.
+        /// containing the <see cref="User"/> entity if found; otherwise, <c>null</c>.
         /// </returns>
         /// <remarks>
         /// The username comparison is case-insensitive.
         /// </remarks>
         async Task<User?> IUserRepository.GetUserByUsernameAsync(string username)
         {
-            return await context.Users.FirstOrDefaultAsync(user => user.Username.ToLower() == username.ToLower());
+            return await context.Users.Include(u => u.TodoItems).FirstOrDefaultAsync(user => user.Username.ToLower() == username.ToLower());
         }
         /// <summary>
         /// Asynchronously retrieves all <see cref="User"/> entities from the data store.
         /// </summary>
         /// <returns>
         /// A <see cref="Task{TResult}"/> representing the asynchronous operation,
-        /// containing an <see cref="IEnumerable{User}"/> of all users.
+        /// containing an enumerable of <see cref="User"/> entities.
         /// </returns>
         /// <remarks>
-        /// The users are returned in no particular order.
+        /// This method includes related <see cref="TodoItem"/> entities for each user.
         /// </remarks>
         async Task<IEnumerable<User>> IUserRepository.GetUsersAsync()
         {
-            return await context.Users.ToListAsync();
+            return await context.Users.Include(u => u.TodoItems).ToListAsync();
         }
         /// <summary>
         /// Asynchronously saves all changes made in the context to the data store.
@@ -111,6 +110,21 @@ namespace ToDoList.Repositories
             context.Entry(user).State = EntityState.Detached;
             context.Entry(updateUser).State = EntityState.Modified;
             return Task.CompletedTask;
+        }
+        /// <summary>
+        /// Asynchronously retrieves a <see cref="User"/> entity by its identifier from the data store.
+        /// </summary>
+        /// <param name="id">The identifier of the user to retrieve.</param>
+        /// <returns>
+        /// A <see cref="Task{TResult}"/> representing the asynchronous operation,
+        /// containing the <see cref="User"/> entity if found; otherwise, <c>null</c>.
+        /// </returns>
+        /// <remarks>
+        /// The identifier comparison is exact.
+        /// </remarks>
+        public async Task<User?> GetUserByIdAsync(int id)
+        {
+            return await context.Users.FindAsync(id);
         }
     }
 }
