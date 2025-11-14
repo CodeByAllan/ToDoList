@@ -24,15 +24,6 @@ namespace ToDoList.interfaces
         /// </returns>
         Task<User?> GetUserByUsernameAsync(string username);
         /// <summary>
-        /// Creates a new user asynchronously.
-        /// </summary>
-        /// <param name="createUserDto">The data transfer object containing the User creation details
-        /// </param>
-        /// <returns>
-        /// A task that represents the asynchronous operation. The task result contains the newly created User.
-        /// </returns>
-        Task<User> CreateUserAsync(CreateUserDto createUserDto);
-        /// <summary>
         /// Updates an existing user asynchronously.
         /// </summary>
         /// <param name="username">The unique username of the user to update.</param>

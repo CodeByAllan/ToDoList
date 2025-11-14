@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ToDoList.Dtos;
 using ToDoList.interfaces;
@@ -9,36 +10,11 @@ namespace ToDoList.Controllers
     /// Handles HTTP requests for User management operations.
     /// Provides endpoints for creating, retrieving, updating, and deleting users.
     /// </summary>
+    [Authorize]
     [ApiController]
     [Route("[controller]")]
     public class UserController(IUserService _userService) : ControllerBase
     {
-        /// <summary>
-        /// Creates a new user asynchronously.
-        /// </summary>
-        /// <param name="createUserDto">The data transfer object containing the user details to create.</param>
-        /// <returns>
-        /// A <see cref="CreatedAtActionResult"/> with status code 201 and the created todo item if successful.
-        /// A <see cref="BadRequestResult"/> with status code 400 if an argument validation error occurs.
-        /// </returns>
-        [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CreateUserDto createUserDto)
-        {
-            try
-            {
-                var createdUser = await _userService.CreateUserAsync(createUserDto);
-                return CreatedAtAction(
-                    nameof(GetById),
-                    new { username = createdUser.Username },
-                    createdUser
-                );
-            }
-            catch (ArgumentException ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
-
-        }
         /// <summary>
         /// Retrieves all users asynchronously.
         /// </summary>

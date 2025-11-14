@@ -1,9 +1,9 @@
 namespace ToDoList.Dtos
 {
     /// <summary>
-    /// Data Transfer Object for creating a new Todo item.
+    /// Data Transfer Object for register a new User.
     /// </summary>
-    public record CreateUserDto
+    public record RegisterRequestDto
     {
         /// <summary>
         /// Gets or sets the first name of the user.
@@ -17,5 +17,9 @@ namespace ToDoList.Dtos
         /// Gets or sets the username of the user.
         /// </summary>
         public string Username { get; set; } = string.Empty;
+        /// <summary>
+        /// Gets or sets the password of the user.
+        /// </summary>
+        public string Password { get; set; } = string.Empty;
     }
 }

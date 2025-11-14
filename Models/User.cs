@@ -42,6 +42,13 @@ namespace ToDoList.Models
         /// </remarks>
         public string Username { get; init; } = string.Empty;
         /// <summary>
+        /// Gets the password of the user.
+        /// </summary>
+        /// <remarks>
+        /// This property is required and defaults to an empty string.
+        /// </remarks>
+        public string Password { get; init; } = string.Empty;
+        /// <summary>
         /// Gets the collection of to-do items associated with the user.
         /// </summary>
         /// <remarks>

@@ -11,40 +11,6 @@ namespace ToDoList.Services
     public class UserService(IUserRepository _repository) : IUserService
     {
         /// <summary>
-        /// Creates a new user.
-        /// </summary>
-        /// <param name="createUserDto">The user data transfer object containing user details.</param>
-        /// <returns>The created user.</returns>
-        /// <exception cref="ArgumentException">Thrown when required fields are missing or username is already taken.</exception>
-        public async Task<User> CreateUserAsync(CreateUserDto createUserDto)
-        {
-            if (string.IsNullOrWhiteSpace(createUserDto.FirstName))
-            {
-                throw new ArgumentException("FirstName is required!");
-            }
-            if (string.IsNullOrWhiteSpace(createUserDto.Username))
-            {
-                throw new ArgumentException("Username is required!");
-            }
-            var userIsExist = await _repository.GetUserByUsernameAsync(createUserDto.Username);
-            if (userIsExist is not null)
-            {
-                throw new ArgumentException($"Username {createUserDto.Username} is already taken!");
-            }
-            var dateTimeNow = DateTime.UtcNow;
-            var user = new User
-            {
-                FirstName = createUserDto.FirstName,
-                LastName = createUserDto.LastName,
-                Username = createUserDto.Username,
-                CreatedAt = dateTimeNow,
-                UpdatedAt = dateTimeNow
-            };
-            await _repository.CreateUserAsync(user);
-            await _repository.SaveUserAsync();
-            return user;
-        }
-        /// <summary>
         /// Deletes a user by username.
         /// </summary>
         /// <param name="username">The username of the user to delete.</param>
@@ -112,6 +78,7 @@ namespace ToDoList.Services
                 FirstName = updateUserDto.FirstName ?? userIsExist.FirstName,
                 LastName = updateUserDto.LastName ?? userIsExist.LastName,
                 Username = updateUserDto.Username ?? userIsExist.Username,
+                Password = updateUserDto.Password ?? userIsExist.Password,
                 UpdatedAt = DateTime.UtcNow
             };
             await _repository.UpdateUserAsync(userIsExist, updatedUser);

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ToDoList.Dtos;
 using ToDoList.interfaces;
@@ -8,6 +9,8 @@ namespace ToDoList.Controllers
     /// Handles HTTP requests for Todo Item management operations.
     /// Provides endpoints for creating, retrieving, updating, and deleting todo items.
     /// </summary>
+
+    [Authorize]
     [ApiController]
     [Route("[controller]")]
     public class TodoItemController(ITodoItemService _service) : ControllerBase
