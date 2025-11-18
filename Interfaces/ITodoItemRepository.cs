@@ -11,14 +11,14 @@ namespace ToDoList.interfaces
         /// Retrieves all todo items asynchronously.
         /// </summary>
         /// <returns>A task that represents the asynchronous operation. The task result contains a collection of all TodoItem objects.</returns>
-        Task<IEnumerable<TodoItem>> GetTodoItemsAsync();
+        Task<IEnumerable<TodoItem>> GetTodoItemsAsync(int userId);
 
         /// <summary>
         /// Retrieves a specific todo item by its identifier asynchronously.
         /// </summary>
         /// <param name="id">The unique identifier of the todo item to retrieve.</param>
         /// <returns>A task that represents the asynchronous operation. The task result contains the TodoItem if found; otherwise, null.</returns>
-        Task<TodoItem?> GetTodoItemByIdAsync(int id);
+        Task<TodoItem?> GetTodoItemByIdAsync(int id, int userId);
 
         /// <summary>
         /// Creates a new todo item asynchronously.

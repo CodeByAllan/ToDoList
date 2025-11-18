@@ -25,9 +25,9 @@ namespace ToDoList.Repositories
         /// A task that represents the asynchronous operation. The task result contains an
         /// <see cref="IEnumerable{TodoItem}"/> with all todo items.
         /// </returns>
-        public async Task<IEnumerable<TodoItem>> GetTodoItemsAsync()
+        public async Task<IEnumerable<TodoItem>> GetTodoItemsAsync(int userId)
         {
-            return await context.TodoItems.ToListAsync();
+            return context.TodoItems.Where(t => t.UserId == userId).ToList();
         }
         /// <summary>
         /// Retrieves a single <see cref="TodoItem"/> by its identifier asynchronously.
@@ -37,9 +37,9 @@ namespace ToDoList.Repositories
         /// A task that represents the asynchronous operation. The task result contains the
         /// <see cref="TodoItem"/> if found; otherwise, <c>null</c>.
         /// </returns>
-        public async Task<TodoItem?> GetTodoItemByIdAsync(int id)
+        public async Task<TodoItem?> GetTodoItemByIdAsync(int id, int userId)
         {
-            return await context.TodoItems.FindAsync(id);
+            return await context.TodoItems.FirstOrDefaultAsync(t => t.UserId == userId && t.Id == id);
         }
         /// <summary>
         /// Adds a new <see cref="TodoItem"/> to the context asynchronously.

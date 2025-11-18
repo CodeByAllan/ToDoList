@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ToDoList.Dtos;
 using ToDoList.interfaces;
+using ToDoList.Utils;
 
 namespace ToDoList.Controllers
 {
@@ -30,7 +31,8 @@ namespace ToDoList.Controllers
         {
             try
             {
-                var createTodoItem = await _service.CreateTodoItemAsync(createTodoItemDto);
+                var userId = User.GetUserId();
+                var createTodoItem = await _service.CreateTodoItemAsync(createTodoItemDto, userId);
                 return CreatedAtAction(
                     nameof(GetById),
 
@@ -47,6 +49,10 @@ namespace ToDoList.Controllers
             {
                 return BadRequest(new { message = ex.Message });
             }
+            catch (InvalidOperationException ex)
+            {
+                return Unauthorized(new { message = "Identity error:" + ex.Message });
+            }
         }
         /// <summary>
         /// Retrieves all todo items asynchronously.
@@ -57,8 +63,16 @@ namespace ToDoList.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var tasks = await _service.GetTodoItemsAsync();
-            return Ok(tasks);
+            try
+            {
+                var userId = User.GetUserId();
+                var tasks = await _service.GetTodoItemsAsync(userId);
+                return Ok(tasks);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Unauthorized(new { message = "Identity error:" + ex.Message });
+            }
         }
         /// <summary>
         /// Retrieves a specific todo item by its identifier asynchronously.
@@ -71,12 +85,20 @@ namespace ToDoList.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var task = await _service.GetTodoItemByIdAsync(id);
-            if (task == null)
+            try
             {
-                return NotFound();
+                var userId = User.GetUserId();
+                var task = await _service.GetTodoItemByIdAsync(id, userId);
+                if (task == null)
+                {
+                    return NotFound();
+                }
+                return Ok(task);
             }
-            return Ok(task);
+            catch (InvalidOperationException ex)
+            {
+                return Unauthorized(new { message = "Identity error:" + ex.Message });
+            }
         }
         /// <summary>
         /// Updates an existing todo item asynchronously.
@@ -97,7 +119,8 @@ namespace ToDoList.Controllers
             }
             try
             {
-                var updatedTodoItem = await _service.UpdateTodoItemAsync(id, updateTodoItemDto);
+                var userId = User.GetUserId();
+                var updatedTodoItem = await _service.UpdateTodoItemAsync(id, updateTodoItemDto, userId);
                 return Ok(updatedTodoItem);
             }
             catch (KeyNotFoundException)
@@ -108,7 +131,10 @@ namespace ToDoList.Controllers
             {
                 return BadRequest(new { message = ex.Message });
             }
-
+            catch (InvalidOperationException ex)
+            {
+                return Unauthorized(new { message = "Identity error:" + ex.Message });
+            }
         }
         /// <summary>
         /// Deletes a todo item by its identifier asynchronously.
@@ -125,7 +151,8 @@ namespace ToDoList.Controllers
         {
             try
             {
-                await _service.DeleteTodoItemAsync(id);
+                var userId = User.GetUserId();
+                await _service.DeleteTodoItemAsync(id, userId);
                 return NoContent();
             }
             catch (KeyNotFoundException)
@@ -135,6 +162,10 @@ namespace ToDoList.Controllers
             catch (ArgumentException ex)
             {
                 return BadRequest(new { message = ex.Message });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Unauthorized(new { message = "Identity error:" + ex.Message });
             }
         }
 
