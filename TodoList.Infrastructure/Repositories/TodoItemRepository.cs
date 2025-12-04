@@ -32,4 +32,8 @@ public class TodoItemRepository(ApplicationDbContext _applicationDbContext) : IT
         _applicationDbContext.TodoItems.Update(todoItem);
         return Task.CompletedTask;
     }
+    public async Task<int> SaveChangesAsync()
+    {
+        return await _applicationDbContext.SaveChangesAsync();
+    }
 }

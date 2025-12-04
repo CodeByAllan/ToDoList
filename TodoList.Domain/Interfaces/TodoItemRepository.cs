@@ -8,4 +8,5 @@ public interface ITodoItemRepository
     Task AddAsync(TodoItem todoItem);
     Task UpdateAsync(TodoItem todoItem);
     Task DeleteAsync(TodoItem todoItem);
+    Task<int> SaveChangesAsync();
 }
