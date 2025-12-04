@@ -1,6 +1,10 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using TodoList.Application.Interfaces;
+using TodoList.Application.Services;
+using TodoList.Domain.Interfaces;
 using TodoList.Infrastructure.Persistence;
+using TodoList.Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +16,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
+builder.Services.AddScoped<ITodoItemRepository, TodoItemRepository>();
+builder.Services.AddScoped<ITodoItemService, TodoItemService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
