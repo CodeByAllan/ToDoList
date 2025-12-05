@@ -50,6 +50,10 @@ public static class TodoEndpoints
                     return Results.NotFound();
                 }
             }
+            catch (KeyNotFoundException ex)
+            {
+                return Results.NotFound(new { message = ex.Message });
+            }
             catch (Exception ex)
             {
                 return Results.InternalServerError(new { message = ex.Message });

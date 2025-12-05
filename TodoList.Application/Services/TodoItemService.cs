@@ -19,14 +19,15 @@ public class TodoItemService(ITodoItemRepository _repository) : ITodoItemService
         return _repository.GetAllAsync();
     }
 
-    public async Task<TodoItem?> GetByIdAsync(int id)
+    public async Task<TodoItem> GetByIdAsync(int id)
     {
-        return await _repository.GetByIdAsync(id);
+        TodoItem todoItem = await _repository.GetByIdAsync(id) ?? throw new KeyNotFoundException($"TodoItem with Id {id} not found!");
+        return todoItem;
     }
 
     public async Task<TodoItem> UpdateAsync(int id, UpdateTodoItemDto updateTodoItemDto)
     {
-        TodoItem? todoItem = await _repository.GetByIdAsync(id) ?? throw new KeyNotFoundException($"TodoItem with Id {id} not found!");
+        TodoItem todoItem = await GetByIdAsync(id);
         if (updateTodoItemDto.Title != null)
         {
             todoItem.UpdateTitle(updateTodoItemDto.Title);
@@ -52,7 +53,7 @@ public class TodoItemService(ITodoItemRepository _repository) : ITodoItemService
     }
     public async Task DeleteAsync(int id)
     {
-        TodoItem? todoItem = await _repository.GetByIdAsync(id) ?? throw new KeyNotFoundException($"TodoItem with Id {id} not found!");
+        TodoItem todoItem = await GetByIdAsync(id);
         await _repository.DeleteAsync(todoItem);
         await _repository.SaveChangesAsync();
     }
