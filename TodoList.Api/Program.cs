@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using TodoList.Api.Endpoints;
 using TodoList.Application.Interfaces;
 using TodoList.Application.Services;
 using TodoList.Domain.Interfaces;
@@ -27,5 +28,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.MapTodoEndpoints();
 
 app.Run();
