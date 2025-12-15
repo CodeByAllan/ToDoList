@@ -5,7 +5,7 @@ using TodoList.Domain.Interfaces;
 
 namespace TodoList.Application.Services;
 
-public class UserService(IUserRepository _repository) : IUserService
+public class UserService(IUserRepository _repository, IPasswordHashService _passwordHashService) : IUserService
 {
     public async Task<User> CreateAsync(CreateUserDto createUserDto)
     {
@@ -14,7 +14,8 @@ public class UserService(IUserRepository _repository) : IUserService
         {
             throw new InvalidOperationException($"Username '{createUserDto.Username}' It is already in use.");
         }
-        User newUser = new(firstName: createUserDto.FirstName, lastName: createUserDto.LastName, username: createUserDto.Username, password: createUserDto.Password);
+        string hashedPassword = _passwordHashService.HashPassword(createUserDto.Password);
+        User newUser = new(firstName: createUserDto.FirstName, lastName: createUserDto.LastName, username: createUserDto.Username, password: hashedPassword);
         await _repository.AddAsync(newUser);
         await _repository.SaveChangesAsync();
         return newUser;
@@ -56,7 +57,8 @@ public class UserService(IUserRepository _repository) : IUserService
         }
         if (updateUserDto.Password != null)
         {
-            user.UpdatePassword(updateUserDto.Password);
+            string hashedPassword = _passwordHashService.HashPassword(updateUserDto.Password);
+            user.UpdatePassword(hashedPassword);
         }
         await _repository.UpdateAsync(user);
         await _repository.SaveChangesAsync();
