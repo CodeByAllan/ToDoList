@@ -5,23 +5,24 @@ using TodoList.Domain.Interfaces;
 
 namespace TodoList.Application.Services;
 
-public class TodoItemService(ITodoItemRepository _repository) : ITodoItemService
+public class TodoItemService(ITodoItemRepository _todoItemRepository, IUserRepository _userRepository) : ITodoItemService
 {
     public async Task<TodoItem> CreateAsync(CreateTodoItemDto createTodoItemDto)
     {
-        var todoItem = new TodoItem(title: createTodoItemDto.Title, description: createTodoItemDto.Description);
-        await _repository.AddAsync(todoItem);
-        await _repository.SaveChangesAsync();
+        var user = await _userRepository.GetByIdAsync(createTodoItemDto.UserId) ?? throw new KeyNotFoundException($"User with Id {createTodoItemDto.UserId} not found!");
+        var todoItem = new TodoItem(title: createTodoItemDto.Title, description: createTodoItemDto.Description, userId: createTodoItemDto.UserId);
+        await _todoItemRepository.AddAsync(todoItem);
+        await _todoItemRepository.SaveChangesAsync();
         return todoItem;
     }
     public Task<IEnumerable<TodoItem>> GetAllAsync()
     {
-        return _repository.GetAllAsync();
+        return _todoItemRepository.GetAllAsync();
     }
 
     public async Task<TodoItem> GetByIdAsync(int id)
     {
-        TodoItem todoItem = await _repository.GetByIdAsync(id) ?? throw new KeyNotFoundException($"TodoItem with Id {id} not found!");
+        TodoItem todoItem = await _todoItemRepository.GetByIdAsync(id) ?? throw new KeyNotFoundException($"TodoItem with Id {id} not found!");
         return todoItem;
     }
 
@@ -47,14 +48,14 @@ public class TodoItemService(ITodoItemRepository _repository) : ITodoItemService
                 todoItem.MarkAsIncomplete();
             }
         }
-        await _repository.UpdateAsync(todoItem);
-        await _repository.SaveChangesAsync();
+        await _todoItemRepository.UpdateAsync(todoItem);
+        await _todoItemRepository.SaveChangesAsync();
         return todoItem;
     }
     public async Task DeleteAsync(int id)
     {
         TodoItem todoItem = await GetByIdAsync(id);
-        await _repository.DeleteAsync(todoItem);
-        await _repository.SaveChangesAsync();
+        await _todoItemRepository.DeleteAsync(todoItem);
+        await _todoItemRepository.SaveChangesAsync();
     }
 }

@@ -7,6 +7,7 @@ public class User
     public string? LastName { get; private set; }
     public string Username { get; private set; } = string.Empty;
     public string Password { get; private set; } = string.Empty;
+    public ICollection<TodoItem> TodoItems { get; init; } = [];
     public DateTime CreatedAt { get; private set; }
     public DateTime UpdatedAt { get; private set; }
     private User() { }

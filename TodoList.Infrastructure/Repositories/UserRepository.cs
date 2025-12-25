@@ -17,15 +17,15 @@ public class UserRepository(Persistence.ApplicationDbContext _applicationDbConte
     }
     public async Task<IEnumerable<User>> GetAllAsync()
     {
-        return await _applicationDbContext.Users.ToListAsync();
+        return await _applicationDbContext.Users.Include(u => u.TodoItems).ToListAsync();
     }
     public async Task<User?> GetByIdAsync(int id)
     {
-        return await _applicationDbContext.Users.FindAsync(id);
+        return await _applicationDbContext.Users.Include(u => u.TodoItems).FirstOrDefaultAsync(user => user.ID == id);
     }
     public async Task<User?> GetByUsernameAsync(string username)
     {
-        return await _applicationDbContext.Users.FirstOrDefaultAsync(u => u.Username == username);
+        return await _applicationDbContext.Users.Include(u => u.TodoItems).FirstOrDefaultAsync(user => user.Username == username);
     }
     public async Task<int> SaveChangesAsync()
     {
