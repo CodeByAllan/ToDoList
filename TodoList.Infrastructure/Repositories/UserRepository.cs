@@ -15,10 +15,6 @@ public class UserRepository(Persistence.ApplicationDbContext _applicationDbConte
         _applicationDbContext.Users.Remove(user);
         return Task.CompletedTask;
     }
-    public async Task<IEnumerable<User>> GetAllAsync()
-    {
-        return await _applicationDbContext.Users.Include(u => u.TodoItems).ToListAsync();
-    }
     public async Task<User?> GetByIdAsync(int id)
     {
         return await _applicationDbContext.Users.Include(u => u.TodoItems).FirstOrDefaultAsync(user => user.ID == id);

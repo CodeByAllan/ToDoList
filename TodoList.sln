@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TodoList.Application", "Tod
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TodoList.Config", "TodoList.Config\TodoList.Config.csproj", "{56BF5B5F-D45D-43DA-B3BF-4D32AB7B120B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TodoList.Utils", "TodoList.Utils\TodoList.Utils.csproj", "{6F588E7D-AF5D-4280-9B3F-11E24094DC0C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -83,6 +85,18 @@ Global
 		{56BF5B5F-D45D-43DA-B3BF-4D32AB7B120B}.Release|x64.Build.0 = Release|Any CPU
 		{56BF5B5F-D45D-43DA-B3BF-4D32AB7B120B}.Release|x86.ActiveCfg = Release|Any CPU
 		{56BF5B5F-D45D-43DA-B3BF-4D32AB7B120B}.Release|x86.Build.0 = Release|Any CPU
+		{6F588E7D-AF5D-4280-9B3F-11E24094DC0C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6F588E7D-AF5D-4280-9B3F-11E24094DC0C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6F588E7D-AF5D-4280-9B3F-11E24094DC0C}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{6F588E7D-AF5D-4280-9B3F-11E24094DC0C}.Debug|x64.Build.0 = Debug|Any CPU
+		{6F588E7D-AF5D-4280-9B3F-11E24094DC0C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{6F588E7D-AF5D-4280-9B3F-11E24094DC0C}.Debug|x86.Build.0 = Debug|Any CPU
+		{6F588E7D-AF5D-4280-9B3F-11E24094DC0C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6F588E7D-AF5D-4280-9B3F-11E24094DC0C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6F588E7D-AF5D-4280-9B3F-11E24094DC0C}.Release|x64.ActiveCfg = Release|Any CPU
+		{6F588E7D-AF5D-4280-9B3F-11E24094DC0C}.Release|x64.Build.0 = Release|Any CPU
+		{6F588E7D-AF5D-4280-9B3F-11E24094DC0C}.Release|x86.ActiveCfg = Release|Any CPU
+		{6F588E7D-AF5D-4280-9B3F-11E24094DC0C}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -18,14 +18,14 @@ public class TodoItemRepository(ApplicationDbContext _applicationDbContext) : IT
         return Task.CompletedTask;
     }
 
-    public async Task<IEnumerable<TodoItem>> GetAllAsync()
+    public async Task<IEnumerable<TodoItem>> GetAllAsync(int userId)
     {
-        return await _applicationDbContext.TodoItems.ToListAsync();
+        return await _applicationDbContext.TodoItems.Where(item => item.UserId == userId).ToListAsync();
     }
 
-    public async Task<TodoItem?> GetByIdAsync(int id)
+    public async Task<TodoItem?> GetByIdAsync(int id, int userId)
     {
-        return await _applicationDbContext.TodoItems.FindAsync(id);
+        return await _applicationDbContext.TodoItems.Where(item => item.UserId == userId && item.ID == id).FirstOrDefaultAsync();
     }
     public Task UpdateAsync(TodoItem todoItem)
     {

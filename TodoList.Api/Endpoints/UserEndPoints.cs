@@ -8,16 +8,8 @@ public static class UserEndpoints
 {
     public static void MapUserEndpoints(this WebApplication app)
     {
-        var users = app.MapGroup("/users").RequireAuthorization();
+        var users = app.MapGroup("/users").RequireAuthorization("OwnerOnly");
         
-        users.MapGet("/", async (IUserService _service) =>
-       {
-           try { return Results.Ok(await _service.GetAllAsync()); }
-           catch (Exception ex)
-           {
-               return Results.InternalServerError(new { message = ex.Message });
-           }
-       }).WithName("GetAllUser");
         users.MapGet("/{id}", async (IUserService _service, int id) =>
         {
             try

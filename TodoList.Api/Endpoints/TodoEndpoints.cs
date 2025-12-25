@@ -1,6 +1,8 @@
+using System.Security.Claims;
 using TodoList.Application.Dtos;
 using TodoList.Application.Interfaces;
 using TodoList.Domain.Entities;
+using ToDoList.Utils;
 
 namespace TodoList.Api.Endpoints;
 
@@ -10,11 +12,11 @@ public static class TodoEndpoints
     {
         var todos = app.MapGroup("/todos").RequireAuthorization();
 
-        todos.MapPost("/", async (ITodoItemService _service, CreateTodoItemDto request) =>
+        todos.MapPost("/", async (ITodoItemService _service, CreateTodoItemDto request, ClaimsPrincipal claimsPrincipal) =>
         {
             try
             {
-                TodoItem newItem = await _service.CreateAsync(request);
+                TodoItem newItem = await _service.CreateAsync(request, claimsPrincipal.GetUserId());
                 return Results.Created($"/todos/{newItem.ID}", newItem);
             }
             catch (ArgumentException ex)
@@ -27,20 +29,20 @@ public static class TodoEndpoints
             }
         }).WithName("CreateTodoItem");
 
-        todos.MapGet("/", async (ITodoItemService _service) =>
+        todos.MapGet("/", async (ITodoItemService _service, ClaimsPrincipal claimsPrincipal) =>
         {
-            try { return Results.Ok(await _service.GetAllAsync()); }
+            try { return Results.Ok(await _service.GetAllAsync(claimsPrincipal.GetUserId())); }
             catch (Exception ex)
             {
                 return Results.InternalServerError(new { message = ex.Message });
             }
         }).WithName("GetAllTodoItem");
 
-        todos.MapGet("/{id}", async (ITodoItemService _service, int id) =>
+        todos.MapGet("/{id}", async (ITodoItemService _service, int id, ClaimsPrincipal claimsPrincipal) =>
         {
             try
             {
-                TodoItem? todoItem = await _service.GetByIdAsync(id);
+                TodoItem? todoItem = await _service.GetByIdAsync(id, claimsPrincipal.GetUserId());
                 if (todoItem != null)
                 {
                     return Results.Ok(todoItem);
@@ -60,11 +62,11 @@ public static class TodoEndpoints
             }
         });
 
-        todos.MapPut("/{id}", async (ITodoItemService _service, int id, UpdateTodoItemDto request) =>
+        todos.MapPut("/{id}", async (ITodoItemService _service, int id, UpdateTodoItemDto request, ClaimsPrincipal claimsPrincipal) =>
         {
             try
             {
-                TodoItem todoItem = await _service.UpdateAsync(id, request);
+                TodoItem todoItem = await _service.UpdateAsync(id, request, claimsPrincipal.GetUserId());
                 return Results.Ok(todoItem);
             }
             catch (KeyNotFoundException ex)
@@ -80,11 +82,11 @@ public static class TodoEndpoints
                 return Results.InternalServerError(new { message = ex.Message });
             }
         });
-        todos.MapDelete("/{id}", async (ITodoItemService _service, int id) =>
+        todos.MapDelete("/{id}", async (ITodoItemService _service, int id, ClaimsPrincipal claimsPrincipal) =>
         {
             try
             {
-                await _service.DeleteAsync(id);
+                await _service.DeleteAsync(id, claimsPrincipal.GetUserId());
                 return Results.NoContent();
             }
             catch (KeyNotFoundException ex)

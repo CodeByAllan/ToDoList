@@ -13,10 +13,6 @@ public class UserService(IUserRepository _repository, IPasswordHashService _pass
         await _repository.DeleteAsync(user);
         await _repository.SaveChangesAsync();
     }
-    public Task<IEnumerable<User>> GetAllAsync()
-    {
-        return _repository.GetAllAsync();
-    }
     public async Task<User> GetByIdAsync(int id)
     {
         User user = await _repository.GetByIdAsync(id) ?? throw new KeyNotFoundException($"User with Id {id} not found!");

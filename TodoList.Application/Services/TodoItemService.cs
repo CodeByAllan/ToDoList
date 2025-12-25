@@ -7,28 +7,28 @@ namespace TodoList.Application.Services;
 
 public class TodoItemService(ITodoItemRepository _todoItemRepository, IUserRepository _userRepository) : ITodoItemService
 {
-    public async Task<TodoItem> CreateAsync(CreateTodoItemDto createTodoItemDto)
+    public async Task<TodoItem> CreateAsync(CreateTodoItemDto createTodoItemDto, int userId)
     {
-        var user = await _userRepository.GetByIdAsync(createTodoItemDto.UserId) ?? throw new KeyNotFoundException($"User with Id {createTodoItemDto.UserId} not found!");
-        var todoItem = new TodoItem(title: createTodoItemDto.Title, description: createTodoItemDto.Description, userId: createTodoItemDto.UserId);
+        var user = await _userRepository.GetByIdAsync(userId) ?? throw new KeyNotFoundException($"User with Id {userId} not found!");
+        var todoItem = new TodoItem(title: createTodoItemDto.Title, description: createTodoItemDto.Description, userId: userId);
         await _todoItemRepository.AddAsync(todoItem);
         await _todoItemRepository.SaveChangesAsync();
         return todoItem;
     }
-    public Task<IEnumerable<TodoItem>> GetAllAsync()
+    public Task<IEnumerable<TodoItem>> GetAllAsync(int userId)
     {
-        return _todoItemRepository.GetAllAsync();
+        return _todoItemRepository.GetAllAsync(userId);
     }
 
-    public async Task<TodoItem> GetByIdAsync(int id)
+    public async Task<TodoItem> GetByIdAsync(int id, int userId)
     {
-        TodoItem todoItem = await _todoItemRepository.GetByIdAsync(id) ?? throw new KeyNotFoundException($"TodoItem with Id {id} not found!");
+        TodoItem todoItem = await _todoItemRepository.GetByIdAsync(id, userId) ?? throw new KeyNotFoundException($"TodoItem with Id {id} not found!");
         return todoItem;
     }
 
-    public async Task<TodoItem> UpdateAsync(int id, UpdateTodoItemDto updateTodoItemDto)
+    public async Task<TodoItem> UpdateAsync(int id, UpdateTodoItemDto updateTodoItemDto, int userId)
     {
-        TodoItem todoItem = await GetByIdAsync(id);
+        TodoItem todoItem = await GetByIdAsync(id, userId);
         if (updateTodoItemDto.Title != null)
         {
             todoItem.UpdateTitle(updateTodoItemDto.Title);
@@ -52,9 +52,9 @@ public class TodoItemService(ITodoItemRepository _todoItemRepository, IUserRepos
         await _todoItemRepository.SaveChangesAsync();
         return todoItem;
     }
-    public async Task DeleteAsync(int id)
+    public async Task DeleteAsync(int id, int userId)
     {
-        TodoItem todoItem = await GetByIdAsync(id);
+        TodoItem todoItem = await GetByIdAsync(id, userId);
         await _todoItemRepository.DeleteAsync(todoItem);
         await _todoItemRepository.SaveChangesAsync();
     }

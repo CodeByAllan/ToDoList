@@ -1,10 +1,12 @@
 using System.Text;
 using dotenv.net;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using TodoList.Api.Endpoints;
+using TodoList.Api.Security;
 using TodoList.Application.Interfaces;
 using TodoList.Application.Services;
 using TodoList.Config;
@@ -31,6 +33,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 // Configurations
 builder.Services.Configure<JwtConfigs>(builder.Configuration.GetSection("JwtConfigs"));
 var jwtConfigs = builder.Configuration.GetSection("JwtConfigs").Get<JwtConfigs>();
+builder.Services.AddHttpContextAccessor();
 
 if (jwtConfigs == null || string.IsNullOrEmpty(jwtConfigs.Secret))
 {
@@ -57,6 +60,13 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 // Authorization
 builder.Services.AddAuthorization();
 
+// Custom Authorization Policy
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("OwnerOnly", policy => 
+        policy.AddRequirements(new IsOwnerRequirement()));
+});
+
 // Dependency Injection
 builder.Services.AddScoped<ITodoItemRepository, TodoItemRepository>();
 builder.Services.AddScoped<ITodoItemService, TodoItemService>();
@@ -66,6 +76,7 @@ builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 builder.Services.AddScoped<IPasswordHashService, PasswordHashService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IAuthorizationHandler, IsOwnerHandler>();
 
 var app = builder.Build();
 
