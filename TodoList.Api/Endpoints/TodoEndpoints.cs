@@ -16,7 +16,7 @@ public static class TodoEndpoints
         {
             try
             {
-                TodoItem newItem = await _service.CreateAsync(request, claimsPrincipal.GetUserId());
+                TodoItemResponseDto newItem = await _service.CreateAsync(request, claimsPrincipal.GetUserId());
                 return Results.Created($"/todos/{newItem.ID}", newItem);
             }
             catch (ArgumentException ex)
@@ -31,7 +31,7 @@ public static class TodoEndpoints
         .WithName("CreateTodoItem")
         .WithSummary("Creates a new todo item for the authenticated user.")
         .WithDescription("This endpoint allows an authenticated user to create a new todo item by providing the necessary details in the request body.")
-        .Produces<TodoItem>(StatusCodes.Status201Created)
+        .Produces<TodoItemResponseDto>(StatusCodes.Status201Created)
         .Produces(StatusCodes.Status400BadRequest)
         .Produces(StatusCodes.Status500InternalServerError)
         .Produces(StatusCodes.Status401Unauthorized)
@@ -48,7 +48,7 @@ public static class TodoEndpoints
         .WithName("GetAllTodoItem")
         .WithSummary("Retrieves all todo items for the authenticated user.")
         .WithDescription("This endpoint allows an authenticated user to retrieve all their todo items.")
-        .Produces<List<TodoItem>>(StatusCodes.Status200OK)
+        .Produces<List<TodoItemResponseDto>>(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status500InternalServerError)
         .Produces(StatusCodes.Status401Unauthorized);
 
@@ -56,7 +56,7 @@ public static class TodoEndpoints
         {
             try
             {
-                TodoItem? todoItem = await _service.GetByIdAsync(id, claimsPrincipal.GetUserId());
+                TodoItemResponseDto? todoItem = await _service.GetByIdAsync(id, claimsPrincipal.GetUserId());
                 if (todoItem != null)
                 {
                     return Results.Ok(todoItem);
@@ -78,7 +78,7 @@ public static class TodoEndpoints
         .WithName("GetTodoItemById")
         .WithSummary("Retrieves a specific todo item by ID for the authenticated user.")
         .WithDescription("This endpoint allows an authenticated user to retrieve a specific todo item by its ID.")
-        .Produces<TodoItem>(StatusCodes.Status200OK)
+        .Produces<TodoItemResponseDto>(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status404NotFound)
         .Produces(StatusCodes.Status500InternalServerError)
         .Produces(StatusCodes.Status401Unauthorized);
@@ -87,7 +87,7 @@ public static class TodoEndpoints
         {
             try
             {
-                TodoItem todoItem = await _service.UpdateAsync(id, request, claimsPrincipal.GetUserId());
+                TodoItemResponseDto todoItem = await _service.UpdateAsync(id, request, claimsPrincipal.GetUserId());
                 return Results.Ok(todoItem);
             }
             catch (KeyNotFoundException ex)
@@ -106,7 +106,7 @@ public static class TodoEndpoints
         .WithName("UpdateTodoItem")
         .WithSummary("Updates a specific todo item by ID for the authenticated user.")
         .WithDescription("This endpoint allows an authenticated user to update a specific todo item by its ID.")
-        .Produces<TodoItem>(StatusCodes.Status200OK)
+        .Produces<TodoItemResponseDto>(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status400BadRequest)
         .Produces(StatusCodes.Status404NotFound)
         .Produces(StatusCodes.Status500InternalServerError)

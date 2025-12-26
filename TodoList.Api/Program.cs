@@ -8,6 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
 using TodoList.Api.Endpoints;
 using TodoList.Application.Interfaces;
+using TodoList.Application.Mappings;
 using TodoList.Application.Services;
 using TodoList.Config;
 using TodoList.Domain.Entities;
@@ -97,6 +98,8 @@ builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 builder.Services.AddScoped<IPasswordHashService, PasswordHashService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddAutoMapper(cfg => cfg.AddProfile<MappingProfile>());
+builder.Services.AddAutoMapper(cfg => cfg.AddProfile<MappingTodoItem>());
 
 // Build the application
 var app = builder.Build();

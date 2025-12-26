@@ -16,7 +16,7 @@ public static class UserEndpoints
         {
             try
             {
-                User user = await _service.GetByIdAsync(claimsPrincipal.GetUserId());
+                UserResponseDto user = await _service.GetByIdAsync(claimsPrincipal.GetUserId());
                 if (user != null)
                 {
                     return Results.Ok(user);
@@ -37,7 +37,7 @@ public static class UserEndpoints
         }).WithName("GetMe")
         .WithSummary("Retrieves the current user's profile.")
         .WithDescription("This endpoint allows an authorized user to retrieve their own profile details.")
-        .Produces<User>(StatusCodes.Status200OK)
+        .Produces<UserResponseDto>(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status404NotFound)
         .Produces(StatusCodes.Status500InternalServerError)
         .Produces(StatusCodes.Status401Unauthorized);
@@ -46,7 +46,7 @@ public static class UserEndpoints
         {
             try
             {
-                User user = await _service.UpdateAsync(claimsPrincipal.GetUserId(), request);
+                UserResponseDto user = await _service.UpdateAsync(claimsPrincipal.GetUserId(), request);
                 return Results.Ok(user);
             }
             catch (InvalidOperationException ex)
@@ -68,7 +68,7 @@ public static class UserEndpoints
         }).WithName("UpdateMe")
         .WithSummary("Updates the current user's information.")
         .WithDescription("This endpoint allows an authorized user to update their own information.")
-        .Produces<User>(StatusCodes.Status200OK)
+        .Produces<UserResponseDto>(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status400BadRequest)
         .Produces(StatusCodes.Status404NotFound)
         .Produces(StatusCodes.Status409Conflict)

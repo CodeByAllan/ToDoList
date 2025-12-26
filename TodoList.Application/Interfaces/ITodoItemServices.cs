@@ -5,9 +5,9 @@ namespace TodoList.Application.Interfaces;
 
 public interface ITodoItemService
 {
-    Task<TodoItem> CreateAsync(CreateTodoItemDto createTodoItemDto, int userId);
-    Task<IEnumerable<TodoItem>> GetAllAsync(int userId);
-    Task<TodoItem> GetByIdAsync(int id, int userId);
-    Task<TodoItem> UpdateAsync(int id, UpdateTodoItemDto updateTodoItemDto, int userId);
+    Task<TodoItemResponseDto> CreateAsync(CreateTodoItemDto createTodoItemDto, int userId);
+    Task<IEnumerable<TodoItemResponseDto>> GetAllAsync(int userId);
+    Task<TodoItemResponseDto> GetByIdAsync(int id, int userId);
+    Task<TodoItemResponseDto> UpdateAsync(int id, UpdateTodoItemDto updateTodoItemDto, int userId);
     Task DeleteAsync(int id,int userId);
 }

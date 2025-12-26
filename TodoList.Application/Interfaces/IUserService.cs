@@ -5,7 +5,7 @@ namespace TodoList.Application.Interfaces;
 
 public interface IUserService
 {
-    Task<User> GetByIdAsync(int id);
-    Task<User> UpdateAsync(int id, UpdateUserDto updateUserDto);
+    Task<UserResponseDto> GetByIdAsync(int id);
+    Task<UserResponseDto> UpdateAsync(int id, UpdateUserDto updateUserDto);
     Task DeleteAsync(int id);
 }
