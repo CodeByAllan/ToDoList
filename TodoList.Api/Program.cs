@@ -19,19 +19,23 @@ using TodoList.Infrastructure.Repositories;
 // Load environment variables from .env file
 DotEnv.Load();
 
+// Create the web application builder
 var builder = WebApplication.CreateBuilder(args);
+
+// Add environment variables to configuration
 builder.Configuration.AddEnvironmentVariables();
 
-// Add services to the container.
+// Swagger configuration
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
+    // Swagger document setup
     options.SwaggerDoc("v1", new OpenApiInfo
     {
         Title = "TodoList API",
         Version = "v1"
     });
-
+    // JWT Bearer token configuration for Swagger
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Name = "Authorization",
@@ -39,13 +43,15 @@ builder.Services.AddSwaggerGen(options =>
         Scheme = "Bearer",
         BearerFormat = "JWT",
         In = ParameterLocation.Header,
-        Description = "Insert JWT token with Bearer prefix. Example: Bearer {token}"
+        Description = "Insert JWT token with Bearer into field"
     });
+    // Security requirement for Swagger
     options.AddSecurityRequirement((document) => new OpenApiSecurityRequirement()
     {
         [new OpenApiSecuritySchemeReference("Bearer", document)] = ["readAccess", "writeAccess"]
     });
 });
+
 // Database context
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
@@ -57,6 +63,7 @@ builder.Services.Configure<JwtConfigs>(builder.Configuration.GetSection("JwtConf
 var jwtConfigs = builder.Configuration.GetSection("JwtConfigs").Get<JwtConfigs>();
 builder.Services.AddHttpContextAccessor();
 
+// Validate JwtConfigs
 if (jwtConfigs == null || string.IsNullOrEmpty(jwtConfigs.Secret))
 {
     throw new InvalidOperationException("JwtConfigs not configured correctly or secret key missing.");
@@ -79,15 +86,10 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-// Authorization
-builder.Services.AddAuthorization();
-
 // Custom Authorization Policy
-builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy("OwnerOnly", policy =>
+builder.Services.AddAuthorizationBuilder()
+    .AddPolicy("OwnerOnly", policy =>
         policy.AddRequirements(new IsOwnerRequirement()));
-});
 
 // Dependency Injection
 builder.Services.AddScoped<ITodoItemRepository, TodoItemRepository>();
@@ -100,6 +102,7 @@ builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IAuthorizationHandler, IsOwnerHandler>();
 
+// Build the application
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -112,6 +115,8 @@ if (app.Environment.IsDevelopment())
         options.RoutePrefix = string.Empty;
     });
 }
+
+// Use HTTPS redirection
 app.UseHttpsRedirection();
 
 // Enable authentication and authorization middleware
@@ -123,4 +128,5 @@ app.MapTodoEndpoints();
 app.MapUserEndpoints();
 app.MapAuthEndpoints();
 
+// Run the application
 app.Run();
